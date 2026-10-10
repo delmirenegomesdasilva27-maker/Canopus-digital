@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIGITAL CANOPUS</title>
+<meta name="theme-color" content="#0A5C36">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#edf5ed}
+.header{background:linear-gradient(135deg,#0A5C36,#14b86e);color:white;padding:32px 24px 40px;text-align:center;border-radius:0 0 36px 36px}
+.logo{font-size:36px;font-weight:900;letter-spacing:5px}
+.badge{margin-top:10px;background:rgba(255,255,255,.18);display:inline-block;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:800}
+.card{background:white;margin:18px;border-radius:28px;padding:26px;box-shadow:0 8px 28px rgba(0,0,0,.07)}
+.saldo{font-size:52px;font-weight:900;color:#0A5C36}
+.progress{height:16px;background:#e2efe2;border-radius:100px;margin:18px 0 8px;overflow:hidden}
+.fill{height:100%;width:100%;background:linear-gradient(90deg,#2eff00,#0A5C36);transition:.6s}
+.btn{width:100%;background:linear-gradient(135deg,#2eff00,#18a800);color:#0A3a1f;border:none;padding:20px;border-radius:18px;font-size:18px;font-weight:900;box-shadow:0 10px 24px rgba(46,255,0,.4);cursor:pointer;margin-top:18px}
+input{width:100%;padding:18px;border:2px solid #d9e8d9;border-radius:16px;margin-top:12px;font-size:16px;font-weight:700}
+.tab{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:10px 0 18px;border-top:1px solid #dce8dc}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="header">
+<div class="logo">DIGITAL<br>CANOPUS</div>
+<div class="badge">VILA CANOPUS • ALTAMIRA/PA • 1.000.000 CRIADOS</div>
+</div>
+<div id="home">
+<div class="card">
+<div style="font-size:11px;font-weight:800;color:#7fa67f;letter-spacing:2px">SEU SALDO • BANCO CENTRAL</div>
+<div class="saldo" id="saldoTxt">1.000.000</div>
+<div style="color:#0A5C36;font-weight:800">DIGITAL CANOPUS</div>
+<div class="progress"><div id="bar" class="fill"></div></div>
+<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#5d8a5d"><span id="vendidoTxt">Vendido: 0</span><span id="restamTxt">Restam: 1.000.000</span></div>
+<button class="btn" onclick="show('pix')">⚡ FAZER UM PIX CANOPUS</button>
+</div>
+<div class="card">
+<b style="color:#0A5C36">🏪 Comércios</b> <span id="qtd" style="background:#0A5C36;color:white;padding:5px 12px;border-radius:20px;font-size:12px">0</span>
+<div id="lista" style="margin-top:12px"></div>
+<button onclick="addCom()" style="width:100%;margin-top:14px;padding:14px;border:2px dashed #2eff00;background:#f6fff0;border-radius:14px;color:#0A5C36;font-weight:900">+ ADICIONAR COMÉRCIO</button>
+</div>
+</div>
+<div id="pix" class="hidden">
+<div class="card">
+<div style="font-size:22px;font-weight:900;color:#0A5C36">PIX DIGITAL CANOPUS</div>
+<input id="nome" placeholder="Para quem? Ex: Maria">
+<input id="valor" type="number" placeholder="Quanto? Ex: 50">
+<button class="btn" onclick="fazerPix()">ENVIAR AGORA ⚡</button>
+<button onclick="show('home')" style="width:100%;margin-top:12px;padding:14px;border-radius:14px;border:1px solid #ddd;background:white;font-weight:800">VOLTAR</button>
+</div>
+</div>
+<div class="tab">
+<div onclick="show('home')">🏠 Início</div>
+<div onclick="show('pix')">⚡ Pix</div>
+<div onclick="alert(localStorage.getItem('dc_ext'))">📄 Extrato</div>
+</div>
+<script>
+const TOTAL=1000000;
+let saldo=parseInt(localStorage.getItem('dc_saldo')||'1000000');
+let extrato=JSON.parse(localStorage.getItem('dc_ext')||'[]');
+let comercios=JSON.parse(localStorage.getItem('dc_com')||'["Bar do João","Mercadinho Central"]');
+function salvar(){localStorage.setItem('dc_saldo',saldo);localStorage.setItem('dc_ext',JSON.stringify(extrato));localStorage.setItem('dc_com',JSON.stringify(comercios));render()}
+function render(){let v=TOTAL-saldo;document.getElementById('saldoTxt').innerText=saldo.toLocaleString('pt-BR');document.getElementById('bar').style.width=(saldo/TOTAL*100)+'%';document.getElementById('vendidoTxt').innerText='Vendido: '+v;document.getElementById('restamTxt').innerText='Restam: '+saldo;document.getElementById('qtd').innerText=comercios.length;document.getElementById('lista').innerHTML=comercios.map(c=>'• '+c).join('<br>')}
+function show(t){document.getElementById('home').classList.add('hidden');document.getElementById('pix').classList.add('hidden');document.getElementById(t).classList.remove('hidden')}
+function fazerPix(){let n=document.getElementById('nome').value||'Cliente';let va=parseInt(document.getElementById('valor').value);if(!va||va>saldo){alert('Saldo insuficiente: '+saldo);return}saldo-=va;extrato.push({n:n,v:va});salvar();alert('Vendeu '+va+' para '+n+'! Saldo: '+saldo);show('home')}
+function addCom(){let n=prompt('Nome comércio:');if(n){comercios.push(n);salvar()}}
+render();
+</script>
+</body>
+</html>
